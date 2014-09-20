@@ -486,10 +486,10 @@ point."
 ;; Key bindings ;;
 ;;;;;;;;;;;;;;;;;;
 
-;; Binding to jump to definition of elisp function
+;; Jump to definition of elisp function
 (global-set-key (kbd "C-h C-f") 'find-function)
 
-;; Map C-M-mouse-1 as mouse-2
+;; C-M-mouse-1 as mouse-2
 ;; Doesn't quite work right yet in some cases.
 ;; From FreeNode #emacs:
 ;; <echristopherson> I bound (with key-translation-map) M-C-mouse-1 to mouse-2 in GNU
@@ -517,11 +517,11 @@ point."
 ;; (define-key key-translation-map (kbd "<C-M-up-mouse-1>") (kbd "<up-mouse-2>"))
 ;; (define-key key-translation-map (kbd "<C-M-mouse-1>") (kbd "<mouse-2>"))
 
-;; Use Cmd+Return for full screen; requires patch to Cocoa Emacs
+;; Cmd+Return for full screen; requires patch to Cocoa Emacs
 ;; TODO: Why doesn't `s-RET' work here?
 (global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
 
-;; Use C-c SPC to move right, potentially past the end of a
+;; C-c SPC to move right, potentially past the end of a
 ;; line. Useful for rectangular selection. Unlike in my Vim setup,
 ;; this does insert spaces if you go past the current EOL.
 ;; Note that C-c SPC is used by shell mode and ace-jump mode; and C-c
