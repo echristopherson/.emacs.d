@@ -180,7 +180,7 @@
        ;; This won't work, because slime hasn't been loaded yet:
                                         ;(define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
 
-                                        ; Show parenthesis matching the one under the cursor
+       ;; Show parenthesis matching the one under the cursor
        (show-paren-mode +1)
 
        ;; Start SLIME and position frame and windows the way I like
