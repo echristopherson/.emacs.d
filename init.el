@@ -148,6 +148,8 @@
                                     cider-repl-mode-hook
                                     ))))
 
+;; TODO: elisp mode now doesn't evaluate and print when C-j is pressed; C-u C-x C-e works. Find a way to make C-j work again.
+
 ;; Auto indent when RET is pressed (not just C-j)
 (defun use-newline-and-indent ()
   (local-set-key (kbd "RET") 'newline-and-indent))
