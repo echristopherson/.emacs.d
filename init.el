@@ -16,6 +16,7 @@
 (defvar *use-xiki?* nil "Whether or not to load and enable el4r (for Xiki)")
 (defvar *use-paredit?* t "Whether or not to load and enable paredit and electric Return")
 (defvar *enable-slime?* t "Whether to enable SLIME (by loading required packages and configuring certain things")
+(defvar *enable-cider?* t "Whether to enable Cider (by loading required packages and configuring certain things")
 
 ;;;;;;;;;;;;
 ;; el-get ;;
@@ -34,9 +35,7 @@
 ;; el-get installer.
 
 (setf my:elpa-packages '(
-                         ac-cider
                          auto-complete
-                         cider
                          evil
                          evil-surround
                          exec-path-from-shell
@@ -53,6 +52,12 @@
                                       '(
                                         ac-slime
                                         ;; slime ; For now at least I'm keeping this in Quicklisp
+                                        )))))
+(cond (*enable-cider?*
+       (setf my:elpa-packages (append my:elpa-packages
+                                      '(
+                                        ac-cider
+                                        cider
                                         )))))
 
 ;; set local recipes, el-get-sources should only accept PLIST element
@@ -129,7 +134,6 @@
     lisp-interaction-mode-hook
     scheme-mode-hook
     clojure-mode-hook
-    cider-repl-mode-hook
     )
   "List of Lisp modes to add hooks to.")
 
@@ -137,6 +141,11 @@
     (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
                                     '(
                                       slime-repl-mode-hook
+                                      ))))
+(if *enable-cider?*
+    (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                    '(
+                                      cider-repl-mode-hook
                                       ))))
 
 ;; Auto indent when RET is pressed (not just C-j)
