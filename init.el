@@ -284,7 +284,7 @@
                    t ; append to hook list, so it runs after (paredit-mode +1)
                    )
          ))
-  
+
   ;; Electric Return
   (defvar *paredit-electrify-return-match*
     "[\]}\)\"]"
