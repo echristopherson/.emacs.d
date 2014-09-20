@@ -178,7 +178,7 @@
                  #'(lambda ()
                      (local-set-key (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)))
        ;; This won't work, because slime hasn't been loaded yet:
-                                        ;(define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
+       ;; (define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
 
        ;; Show parenthesis matching the one under the cursor
        (show-paren-mode +1)
@@ -329,8 +329,8 @@
 ;; TODO: Make this work on OS X. howm is actually installed in the
 ;; Homebrew Cocoa Emacs 24, but Emacs can't seem to load it fsr. It
 ;; does load in the prepackaged 23.
-                                        ;(require 'howm)
-                                        ;(howm-mode)
+;; (require 'howm)
+;; (howm-mode)
 
 ;;;;;;;;;;;;
 ;; custom ;;
@@ -513,9 +513,9 @@ point."
 ;; <tali713> echristopherson: it will allow you to simulate a three button mouse.
 ;; ...
 ;; <tali713> echristopherson: use, as with all mac applications.
-                                        ;(define-key key-translation-map (kbd "<C-M-down-mouse-1>") (kbd "<down-mouse-2>"))
-                                        ;(define-key key-translation-map (kbd "<C-M-up-mouse-1>") (kbd "<up-mouse-2>"))
-                                        ;(define-key key-translation-map (kbd "<C-M-mouse-1>") (kbd "<mouse-2>"))
+;; (define-key key-translation-map (kbd "<C-M-down-mouse-1>") (kbd "<down-mouse-2>"))
+;; (define-key key-translation-map (kbd "<C-M-up-mouse-1>") (kbd "<up-mouse-2>"))
+;; (define-key key-translation-map (kbd "<C-M-mouse-1>") (kbd "<mouse-2>"))
 
 ;; Use Cmd+Return for full screen; requires patch to Cocoa Emacs
 ;; TODO: Why doesn't `s-RET' work here?
