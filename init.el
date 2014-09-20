@@ -15,6 +15,7 @@
 (defvar *use-evil?* nil "Whether or not to load and enable evil mode.")
 (defvar *use-xiki?* nil "Whether or not to load and enable el4r (for Xiki)")
 (defvar *use-paredit?* t "Whether or not to load and enable paredit and electric Return")
+(defvar *enable-slime?* t "Whether to enable SLIME (by loading required packages and configuring certain things")
 
 ;;;;;;;;;;;;
 ;; el-get ;;
@@ -34,7 +35,6 @@
 
 (setf my:elpa-packages '(
                          ac-cider
-                         ac-slime
                          auto-complete
                          cider
                          evil
@@ -45,9 +45,15 @@
                          paredit
                          popup ; this should be pulled in by auto-complete, but fsr isn't right now
                          pos-tip
-                         ;; slime ; For now at least I'm keeping this in Quicklisp
                          undo-tree
                          ))
+
+(cond (*enable-slime?*
+       (setf my:elpa-packages (append my:elpa-packages
+                                      '(
+                                        ac-slime
+                                        ;; slime ; For now at least I'm keeping this in Quicklisp
+                                        )))))
 
 ;; set local recipes, el-get-sources should only accept PLIST element
 (setq el-get-sources (mapcar (lambda (elpa-package)
@@ -124,9 +130,14 @@
     lisp-mode-hook
     lisp-interaction-mode-hook
     scheme-mode-hook
-    slime-repl-mode-hook
     clojure-mode-hook)
   "List of Lisp modes to add hooks to.")
+
+(if *enable-slime?*
+    (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                    '(
+                                      slime-repl-mode-hook
+                                      ))))
 
 ;; Auto indent when RET is pressed (not just C-j)
 (defun use-newline-and-indent ()
@@ -138,78 +149,80 @@
         *lisp-mode-hooks*)
 
 ;; SLIME
-(add-to-list 'load-path "~/.quicklisp/dists/quicklisp/software/slime-2.9")
-(setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
-(require 'slime-autoloads)
-(slime-setup '(slime-fancy)) ; load contrib packages
+(cond (*enable-slime?* 
+       (add-to-list 'load-path "~/.quicklisp/dists/quicklisp/software/slime-2.9")
+       (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
+       (require 'slime-autoloads)
+       (slime-setup '(slime-fancy))     ; load contrib packages
 
-;; Point SLIME to copy of HyperSpec installed locally.
-(setq common-lisp-hyperspec-root
-      "/usr/local/share/doc/hyperspec/HyperSpec/")
-(setq common-lisp-hyperspec-symbol-table
-      (concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))
-(setq common-lisp-hyperspec-issuex-table
-      (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))
+       ;; Point SLIME to copy of HyperSpec installed locally.
+       (setq common-lisp-hyperspec-root
+             "/usr/local/share/doc/hyperspec/HyperSpec/")
+       (setq common-lisp-hyperspec-symbol-table
+             (concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))
+       (setq common-lisp-hyperspec-issuex-table
+             (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))
 
-;; Use C-c C-] to close all parens in SLIME REPL, just like in Lisp mode.
-(add-hook 'slime-repl-mode-hook
-          #'(lambda ()
-              (local-set-key (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)))
-;; This won't work, because slime hasn't been loaded yet:
-;(define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
+       ;; Use C-c C-] to close all parens in SLIME REPL, just like in Lisp mode.
+       (add-hook 'slime-repl-mode-hook
+                 #'(lambda ()
+                     (local-set-key (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)))
+       ;; This won't work, because slime hasn't been loaded yet:
+                                        ;(define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
 
-; Show parenthesis matching the one under the cursor
-(show-paren-mode +1)
+                                        ; Show parenthesis matching the one under the cursor
+       (show-paren-mode +1)
 
-;; Start SLIME and position frame and windows the way I like
-(defun my-slime (&optional lisp-command)
-  (interactive)
-  ;; Position and size window if using GUI
-  (when (display-graphic-p)
-    (let ((frame (selected-frame)))
-      (set-frame-position frame 63 487)
-      (set-frame-size frame 168 22)))
-  ;; Split window into two side by side windows
-  (split-window-horizontally)
-  ;; Launch SLIME. Use `lisp-command' argument, if supplied; otherwise
-  ;; just go with `slime''s default (which currently is the global
-  ;; `inferior-lisp-program', but we shouldn't depend on that.
-  (if lisp-command
-      (slime lisp-command)
-    (slime))
-  ;; Choose desired directory both in Emacs in general and the REPL
-  ;; TODO: Use regular let once I've upgraded to Emacs 24 (which has
-  ;; optional lexical binding; the comment at the beginning of this
-  ;; file enables it).
-  (lexical-let ((lisp-directory "~/Code/learning/practical_common_lisp"))
-    ;; This needs to be a hook because otherwise Emacs will try to
-    ;; execute it before SLIME has finished loading.  TODO: We should
-    ;; probably not make this a hook; instead, change directories
-    ;; before calling slime and then reset afterwards.
-    (add-hook 'slime-connected-hook
-          #'(lambda ()
-              (cd lisp-directory)
-              (slime-cd lisp-directory)))))
+       ;; Start SLIME and position frame and windows the way I like
+       (defun my-slime (&optional lisp-command)
+         (interactive)
+         ;; Position and size window if using GUI
+         (when (display-graphic-p)
+           (let ((frame (selected-frame)))
+             (set-frame-position frame 63 487)
+             (set-frame-size frame 168 22)))
+         ;; Split window into two side by side windows
+         (split-window-horizontally)
+         ;; Launch SLIME. Use `lisp-command' argument, if supplied; otherwise
+         ;; just go with `slime''s default (which currently is the global
+         ;; `inferior-lisp-program', but we shouldn't depend on that.
+         (if lisp-command
+             (slime lisp-command)
+           (slime))
+         ;; Choose desired directory both in Emacs in general and the REPL
+         ;; TODO: Use regular let once I've upgraded to Emacs 24 (which has
+         ;; optional lexical binding; the comment at the beginning of this
+         ;; file enables it).
+         (lexical-let ((lisp-directory "~/Code/learning/practical_common_lisp"))
+           ;; This needs to be a hook because otherwise Emacs will try to
+           ;; execute it before SLIME has finished loading.  TODO: We should
+           ;; probably not make this a hook; instead, change directories
+           ;; before calling slime and then reset afterwards.
+           (add-hook 'slime-connected-hook
+                     #'(lambda ()
+                         (cd lisp-directory)
+                         (slime-cd lisp-directory)))))
 
-;; jsj-ac-show-help by Scott Jaderholm -- pop up help on Lisp
-;; functions w/ C-c C-h. Requires SLIME.
-;; TODO: test this, once SLIME is working again.
-(defun jsj-ac-show-help ()
-  "show docs for symbol at point or at beginning of list if not on a symbol"
-  (interactive)
-  (let ((s (save-excursion
-             (or (symbol-at-point)
-                 (progn (backward-up-list)
-                        (forward-char)
-                        (symbol-at-point))))))
-    (pos-tip-show (or (if (equal major-mode 'emacs-lisp-mode)
-                          (ac-symbol-documentation s)
-                        (ac-slime-documentation (symbol-name s))) "no docs")
-                  'popup-tip-face
-                  ;; 'alt-tooltip
-                  (point)
-                  nil
-                  -1)))
+       ;; jsj-ac-show-help by Scott Jaderholm -- pop up help on Lisp
+       ;; functions w/ C-c C-h. Requires SLIME.
+       ;; TODO: test this, once SLIME is working again.
+       (defun jsj-ac-show-help ()
+         "show docs for symbol at point or at beginning of list if not on a symbol"
+         (interactive)
+         (let ((s (save-excursion
+                    (or (symbol-at-point)
+                        (progn (backward-up-list)
+                               (forward-char)
+                               (symbol-at-point))))))
+           (pos-tip-show (or (if (equal major-mode 'emacs-lisp-mode)
+                                 (ac-symbol-documentation s)
+                               (ac-slime-documentation (symbol-name s))) "no docs")
+                         'popup-tip-face
+                         ;; 'alt-tooltip
+                         (point)
+                         nil
+                         -1)))
+       ))
 
 ;; This mapping is also usable in elisp mode. I guess
 ;; lisp-mode-shared-map must be shared by several Lisp modes.
@@ -225,10 +238,12 @@
 
 ;; ac-slime
 ;; TODO: test this, once SLIME is working again.
-(add-hook 'slime-mode-hook #'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook #'set-up-slime-ac)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode))
+(cond (*enable-slime?*
+       (add-hook 'slime-mode-hook #'set-up-slime-ac)
+       (add-hook 'slime-repl-mode-hook #'set-up-slime-ac)
+       (eval-after-load "auto-complete"
+         '(add-to-list 'ac-modes 'slime-repl-mode))
+       ))
 
 ;;;;;;;;;;;;;
 ;; paredit ;;
@@ -251,13 +266,15 @@
   ;; paredit’s normal operation. To alleviate this problem use the
   ;; following code: Stop SLIME's REPL from grabbing DEL, which is
   ;; annoying when backspacing over a '('
-  (add-hook 'slime-repl-mode-hook 
-            #'(lambda ()
-                (define-key slime-repl-mode-map
-                  (read-kbd-macro paredit-backward-delete-key) nil))
-            t ; append to hook list, so it runs after (paredit-mode +1)
-            )
-
+  (cond (*enable-slime?*
+         (add-hook 'slime-repl-mode-hook 
+                   #'(lambda ()
+                       (define-key slime-repl-mode-map
+                         (read-kbd-macro paredit-backward-delete-key) nil))
+                   t ; append to hook list, so it runs after (paredit-mode +1)
+                   )
+         ))
+  
   ;; Electric Return
   (defvar *paredit-electrify-return-match*
     "[\]}\)\"]"
@@ -301,8 +318,8 @@
 ;; TODO: Make this work on OS X. howm is actually installed in the
 ;; Homebrew Cocoa Emacs 24, but Emacs can't seem to load it fsr. It
 ;; does load in the prepackaged 23.
-;(require 'howm)
-;(howm-mode)
+                                        ;(require 'howm)
+                                        ;(howm-mode)
 
 ;;;;;;;;;;;;
 ;; custom ;;
@@ -337,12 +354,12 @@
       (require 'color-theme)
       (eval-after-load "color-theme"
         '(progn
-           ;(color-theme-initialize)
-           ;(load-file "~/.emacs.d/color-theme/color-theme-irblack.el")
-           ;(color-theme-irblack))))
+                                        ;(color-theme-initialize)
+                                        ;(load-file "~/.emacs.d/color-theme/color-theme-irblack.el")
+                                        ;(color-theme-irblack))))
            ;; Slightly different version of ir_black:
-           ;(load-file "~/.emacs.d/color-theme/color-theme-ir-black.el")
-           ;(color-theme-ir-black))))
+                                        ;(load-file "~/.emacs.d/color-theme/color-theme-ir-black.el")
+                                        ;(color-theme-ir-black))))
            ;; My derivative of ir_black:
            (load-file "~/.emacs.d/color-theme/color-theme-ir-gray_EAC.el")
            (color-theme-ir-gray_EAC))))
@@ -411,13 +428,13 @@ point."
 ;; during isearch.
 (setq ring-bell-function
       (lambda ()
-              (unless (memq this-command '(isearch-abort
-                            isearch-done abort-recursive-edit
-                            exit-minibuffer keyboard-quit))
-                (ding))))
+        (unless (memq this-command '(isearch-abort
+                                     isearch-done abort-recursive-edit
+                                     exit-minibuffer keyboard-quit))
+          (ding))))
 
 ;; Use visible instead of audible bell.
-;(setq visible-bell 1)
+                                        ;(setq visible-bell 1)
 
 ;; Adjust path
 ;; This helps Emacs find executables to run, e.g. emacsclient in
@@ -429,7 +446,7 @@ point."
 ;; Show certain buffer on startup when no files have been
 ;; specified. A value of t makes Emacs show *scratch* (which is the
 ;; default if the splash screen is disabled).
-;(setq initial-buffer-choice "some_file")
+                                        ;(setq initial-buffer-choice "some_file")
 
 ;; Use gls for ls (since it supports --dired)
 ;; TODO: Autodetect whether running on Linux or OS X and set accordingly.
@@ -506,6 +523,8 @@ point."
 ;; <http://www.emacswiki.org/emacs/PosTip> -- works like
 ;; jsj-ac-show-help above sort of
 ;; TODO: test this, once SLIME is working again.
+;; TODO: Actually, this doesn't seem to be SLIME-specific; but I can't
+;; get it working now in elisp mode.
 (require 'pos-tip)
 (defun my-describe-function (function)
   "Display the full documentation of FUNCTION (a symbol) in tooltip."
@@ -535,21 +554,21 @@ point."
 ;; NOTE: iTerm2 profiles allow the behavior of left Option and right Option
 ;; be different.
 (when (display-graphic-p)
-   (when (equal window-system 'ns)
-     (defun my-use-option-for-input-method ()
-       (setf mac-option-modifier nil
-             mac-command-modifier 'meta))
+  (when (equal window-system 'ns)
+    (defun my-use-option-for-input-method ()
+      (setf mac-option-modifier nil
+            mac-command-modifier 'meta))
 
-     (defun my-use-option-for-meta ()
-       (setf mac-option-modifier 'meta
-             mac-command-modifier 'super))
+    (defun my-use-option-for-meta ()
+      (setf mac-option-modifier 'meta
+            mac-command-modifier 'super))
 
-     (defun my-toggle-use-option-for-input-method ()
-       "Toggle between (1) using Option for meta and Command for super and (2) passing Option through to OS X and using Command for meta. If neither one of these configurations is active, the first is chosen."
-       (interactive)
-       (if (and (equal mac-option-modifier 'meta)
-                (equal mac-command-modifier 'super))
-           (setf mac-option-modifier nil
-                 mac-command-modifier 'meta)
-         (setf mac-option-modifier 'meta
-               mac-command-modifier 'super)))))
+    (defun my-toggle-use-option-for-input-method ()
+      "Toggle between (1) using Option for meta and Command for super and (2) passing Option through to OS X and using Command for meta. If neither one of these configurations is active, the first is chosen."
+      (interactive)
+      (if (and (equal mac-option-modifier 'meta)
+               (equal mac-command-modifier 'super))
+          (setf mac-option-modifier nil
+                mac-command-modifier 'meta)
+        (setf mac-option-modifier 'meta
+              mac-command-modifier 'super)))))
