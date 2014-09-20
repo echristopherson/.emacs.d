@@ -489,6 +489,8 @@ point."
 ;; Jump to definition of elisp function
 (global-set-key (kbd "C-h C-f") 'find-function)
 
+;; TODO: This is for historical reference only. I use BTT now for middle
+;; button.
 ;; C-M-mouse-1 as mouse-2
 ;; Doesn't quite work right yet in some cases.
 ;; From FreeNode #emacs:
