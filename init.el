@@ -51,7 +51,7 @@
        (setf my:elpa-packages (append my:elpa-packages
                                       '(
                                         ac-slime
-                                        ;; slime ; For now at least I'm keeping this in Quicklisp
+                                        ;; slime ; for now at least I'm keeping this in Quicklisp
                                         )))))
 (cond (*enable-cider?*
        (setf my:elpa-packages (append my:elpa-packages
@@ -110,7 +110,7 @@
 
   (evil-ex-define-cmd "enew" 'evil-buffer-new)
 
-  ;; Evil surround
+  ;; evil surround
   ;; TODO: depends on something I haven't found in packages
   (global-evil-surround-mode 1))
 
