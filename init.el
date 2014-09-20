@@ -137,16 +137,16 @@
     )
   "List of Lisp modes to add hooks to.")
 
-(if *enable-slime?*
-    (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
-                                    '(
-                                      slime-repl-mode-hook
-                                      ))))
-(if *enable-cider?*
-    (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
-                                    '(
-                                      cider-repl-mode-hook
-                                      ))))
+(when *enable-slime?*
+  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                  '(
+                                    slime-repl-mode-hook
+                                    ))))
+(when *enable-cider?*
+  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                  '(
+                                    cider-repl-mode-hook
+                                    ))))
 
 ;; Auto indent when RET is pressed (not just C-j)
 (defun use-newline-and-indent ()
@@ -154,8 +154,8 @@
 
 (mapcar #'(lambda (hook)
             (unless (eq hook 'cider-repl-mode-hook) ; TODO: horrible kludge to make RET work in Clojure REPL
-              (progn (remove-hook hook #'use-paredit-electrify-return-if-match)
-                     (add-hook hook #'use-newline-and-indent))))
+              (remove-hook hook #'use-paredit-electrify-return-if-match)
+              (add-hook hook #'use-newline-and-indent)))
         *lisp-mode-hooks*)
 
 ;; SLIME
@@ -296,16 +296,16 @@
   cursor to the new line."
     (interactive "P")
     (let ((case-fold-search nil))
-      (if (looking-at *paredit-electrify-return-match*)
-          (save-excursion (newline-and-indent)))
+      (when (looking-at *paredit-electrify-return-match*)
+        (save-excursion (newline-and-indent)))
       (newline arg)
       (indent-according-to-mode)))
   (defun use-paredit-electrify-return-if-match ()
     (local-set-key (kbd "RET") 'paredit-electrify-return-if-match))
   (mapcar #'(lambda (hook)
               (unless (eq hook 'cider-repl-mode-hook) ; TODO: horrible kludge to make RET work in Clojure REPL
-                (progn (remove-hook hook #'use-newline-and-indent)
-                       (add-hook hook #'use-paredit-electrify-return-if-match))))
+                (remove-hook hook #'use-newline-and-indent)
+                (add-hook hook #'use-paredit-electrify-return-if-match)))
           *lisp-mode-hooks*))
 
 ;;;;;;;;;;;;;;;;;;;;;
