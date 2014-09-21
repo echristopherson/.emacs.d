@@ -139,12 +139,6 @@
     )
   "List of Lisp modes to add hooks to.")
 
-(when *enable-cider?*
-  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
-                                  '(
-                                    cider-repl-mode-hook
-                                    ))))
-
 ;; TODO: elisp mode now doesn't evaluate and print when C-j is pressed; C-u C-x C-e works. Find a way to make C-j work again.
 
 ;; Auto indent when RET is pressed (not just C-j)
@@ -256,6 +250,13 @@
                     nil
                     -1)))
   )
+
+;; Cider
+(when *enable-cider?*
+  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                  '(
+                                    cider-repl-mode-hook
+                                    ))))
 
 ;; This mapping is also usable in elisp mode. I guess
 ;; lisp-mode-shared-map must be shared by several Lisp modes.
