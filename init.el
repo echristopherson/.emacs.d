@@ -392,98 +392,6 @@
 
 ;; TODO: Show trailing whitespace as gray middle dots.
 
-;;;;;;;;;;;;;;;;;;;
-;; Miscellaneous ;;
-;;;;;;;;;;;;;;;;;;;
-
-;; Add a dir for my own scripts to load path
-(add-to-list 'load-path "~/.emacs.d/lisp")
-
-;; Directory to look in for Emacs C source
-(setf source-directory "~/Code/others/emacs/emacs--bzr")
-
-;; Don't use any tabs in indentation (Emacs by default changes 8 spaces to
-;; tab)
-;; C-q <tab> inserts one anyway (like C-v <tab> in Vim).
-(setq-default indent-tabs-mode nil)
-
-;; Do away with necessity to type `yes' or `no' instead of simple `y' and `n'
-(defun yes-or-no-p (&rest args)
-  (apply #'y-or-n-p args))
-
-;; If running in a terminal, use elinks in tmux to open URLs with
-;; `browse-url' and `hyperspec-lookup'.
-;; TODO: Detect tmux; if it's not running, use default browser.
-(unless (display-graphic-p)
-  (defvar my-browse-url-elinks-browser "elinks")
-  (defvar my-browse-url-tmux-program "tmux")
-  (defvar my-browse-url-tmux-args '("split-window" "-h"))
-
-  ;; Adapted from browse-url-text-xterm in browse-url.el
-  (defun my-browse-url-tmux-elinks (url &optional new-window)
-    ;; new-window ignored (for now)
-    "Ask tmux to create a new split to the right, in which elinks
-will be run to load URL. URL defaults to the URL around or before
-point."
-    (interactive (browse-url-interactive-arg "Text browser URL: "))
-    (apply #'start-process
-           `(,(concat my-browse-url-elinks-browser url)
-             nil
-             ,my-browse-url-tmux-program
-             ,@my-browse-url-tmux-args
-             ,(mapconcat 'identity (list my-browse-url-elinks-browser url) " "))))
-
-  (setf browse-url-browser-function #'my-browse-url-tmux-elinks)
-
-  (global-set-key (kbd "<f11>") 'my-toggle-use-option-for-input-method))
-
-;; Stop bell from ringing when I press C-g in the minibuffer or
-;; during isearch.
-(setq ring-bell-function
-      (lambda ()
-        (unless (memq this-command '(isearch-abort
-                                     isearch-done abort-recursive-edit
-                                     exit-minibuffer keyboard-quit))
-          (ding))))
-
-;; Use visible instead of audible bell.
-                                        ;(setq visible-bell 1)
-
-;; Adjust path
-;; This helps Emacs find executables to run, e.g. emacsclient in
-;; magit (which must be the /usr/local/bin version).
-;; Apps in OS X >= 10.8 can't load path or other variables from
-;; ~/.MacOSX/environment.plist
-(exec-path-from-shell-initialize)
-
-;; Show certain buffer on startup when no files have been
-;; specified. A value of t makes Emacs show *scratch* (which is the
-;; default if the splash screen is disabled).
-                                        ;(setq initial-buffer-choice "some_file")
-
-;; Use gls for ls (since it supports --dired)
-;; TODO: Autodetect whether running on Linux or OS X and set accordingly.
-(setq insert-directory-program "gls")
-
-;; Hide dot files in dired
-;; Use M-o to toggle hiding.
-(require 'dired-x)
-(setq-default dired-omit-files-p t)
-(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
-
-;; Backup directory instead of *~ files
-;; From <http://emacswiki.org/emacs/BackupDirectory> and <http://snarfed.org/gnu_emacs_backup_files>
-(make-directory "~/.emacs.d/backup" t)
-(setq
- backup-by-copying t              ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.emacs.d/backup"))    ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t                ; use versioned backups
- )
-
 ;;;;;;;;;;;;;;;;;;
 ;; Key bindings ;;
 ;;;;;;;;;;;;;;;;;;
@@ -587,3 +495,95 @@ point."
                 mac-command-modifier 'meta)
         (setf mac-option-modifier 'meta
               mac-command-modifier 'super)))))
+
+;;;;;;;;;;;;;;;;;;;
+;; Miscellaneous ;;
+;;;;;;;;;;;;;;;;;;;
+
+;; Add a dir for my own scripts to load path
+(add-to-list 'load-path "~/.emacs.d/lisp")
+
+;; Directory to look in for Emacs C source
+(setf source-directory "~/Code/others/emacs/emacs--bzr")
+
+;; Don't use any tabs in indentation (Emacs by default changes 8 spaces to
+;; tab)
+;; C-q <tab> inserts one anyway (like C-v <tab> in Vim).
+(setq-default indent-tabs-mode nil)
+
+;; Do away with necessity to type `yes' or `no' instead of simple `y' and `n'
+(defun yes-or-no-p (&rest args)
+  (apply #'y-or-n-p args))
+
+;; If running in a terminal, use elinks in tmux to open URLs with
+;; `browse-url' and `hyperspec-lookup'.
+;; TODO: Detect tmux; if it's not running, use default browser.
+(unless (display-graphic-p)
+  (defvar my-browse-url-elinks-browser "elinks")
+  (defvar my-browse-url-tmux-program "tmux")
+  (defvar my-browse-url-tmux-args '("split-window" "-h"))
+
+  ;; Adapted from browse-url-text-xterm in browse-url.el
+  (defun my-browse-url-tmux-elinks (url &optional new-window)
+    ;; new-window ignored (for now)
+    "Ask tmux to create a new split to the right, in which elinks
+will be run to load URL. URL defaults to the URL around or before
+point."
+    (interactive (browse-url-interactive-arg "Text browser URL: "))
+    (apply #'start-process
+           `(,(concat my-browse-url-elinks-browser url)
+             nil
+             ,my-browse-url-tmux-program
+             ,@my-browse-url-tmux-args
+             ,(mapconcat 'identity (list my-browse-url-elinks-browser url) " "))))
+
+  (setf browse-url-browser-function #'my-browse-url-tmux-elinks)
+
+  (global-set-key (kbd "<f11>") 'my-toggle-use-option-for-input-method))
+
+;; Stop bell from ringing when I press C-g in the minibuffer or
+;; during isearch.
+(setq ring-bell-function
+      (lambda ()
+        (unless (memq this-command '(isearch-abort
+                                     isearch-done abort-recursive-edit
+                                     exit-minibuffer keyboard-quit))
+          (ding))))
+
+;; Use visible instead of audible bell.
+                                        ;(setq visible-bell 1)
+
+;; Adjust path
+;; This helps Emacs find executables to run, e.g. emacsclient in
+;; magit (which must be the /usr/local/bin version).
+;; Apps in OS X >= 10.8 can't load path or other variables from
+;; ~/.MacOSX/environment.plist
+(exec-path-from-shell-initialize)
+
+;; Show certain buffer on startup when no files have been
+;; specified. A value of t makes Emacs show *scratch* (which is the
+;; default if the splash screen is disabled).
+                                        ;(setq initial-buffer-choice "some_file")
+
+;; Use gls for ls (since it supports --dired)
+;; TODO: Autodetect whether running on Linux or OS X and set accordingly.
+(setq insert-directory-program "gls")
+
+;; Hide dot files in dired
+;; Use M-o to toggle hiding.
+(require 'dired-x)
+(setq-default dired-omit-files-p t)
+(setq dired-omit-files (concat dired-omit-files "\\|^\\..+$"))
+
+;; Backup directory instead of *~ files
+;; From <http://emacswiki.org/emacs/BackupDirectory> and <http://snarfed.org/gnu_emacs_backup_files>
+(make-directory "~/.emacs.d/backup" t)
+(setq
+ backup-by-copying t              ; don't clobber symlinks
+ backup-directory-alist
+ '(("." . "~/.emacs.d/backup"))    ; don't litter my fs tree
+ delete-old-versions t
+ kept-new-versions 6
+ kept-old-versions 2
+ version-control t                ; use versioned backups
+ )
