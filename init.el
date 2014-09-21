@@ -478,6 +478,7 @@
 ;; In Cocoa Emacs, use F11 (chosen because it was what I had already
 ;; arbitrarily chosen for that purpose in MacVim) to toggle behavior
 ;; of Option and Command keys.
+;; NOTE: By default, in the Mac GUI, F11 toggles fullscreen.
 ;; NOTE: iTerm2 profiles allow the behavior of left Option and right Option
 ;; be different.
 (when (display-graphic-p)
@@ -498,7 +499,8 @@
           (setf mac-option-modifier nil
                 mac-command-modifier 'meta)
         (setf mac-option-modifier 'meta
-              mac-command-modifier 'super)))))
+              mac-command-modifier 'super))))
+  (global-set-key (kbd "<f11>") 'my-toggle-use-option-for-input-method))
 
 ;;;;;;;;;;;;;;;;;;;
 ;; Miscellaneous ;;
@@ -541,9 +543,7 @@ point."
              ,@my-browse-url-tmux-args
              ,(mapconcat 'identity (list my-browse-url-elinks-browser url) " "))))
 
-  (setf browse-url-browser-function #'my-browse-url-tmux-elinks)
-
-  (global-set-key (kbd "<f11>") 'my-toggle-use-option-for-input-method))
+  (setf browse-url-browser-function #'my-browse-url-tmux-elinks))
 
 ;; Stop bell from ringing when I press C-g in the minibuffer or
 ;; during isearch.
