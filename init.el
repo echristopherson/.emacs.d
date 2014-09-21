@@ -39,6 +39,7 @@
                          evil
                          evil-surround
                          exec-path-from-shell
+                         fuzzy
                          ;; ir_black-theme ; I used to have this shown in list-packages; but I'm pretty sure it was always actually local.
                          magit
                          paredit
@@ -257,6 +258,9 @@
        (eval-after-load "auto-complete"
          '(add-to-list 'ac-modes 'slime-repl-mode))
        ))
+
+;; Fuzzy autocompletion
+(setf ac-fuzzy-enable t)
 
 ;;;;;;;;;;;;;
 ;; paredit ;;
