@@ -16,7 +16,7 @@
 (defvar *use-xiki?* nil "Whether or not to load and enable el4r (for Xiki)")
 (defvar *use-paredit?* t "Whether or not to load and enable paredit and electric Return")
 (defvar *enable-slime?* t "Whether to enable SLIME (by loading required packages and configuring certain things")
-(defvar *enable-cider?* t "Whether to enable Cider (by loading required packages and configuring certain things")
+(defvar *enable-clojure?* t "Whether to enable Cider (by loading required packages and configuring certain things")
 
 ;;;;;;;;;;;;
 ;; el-get ;;
@@ -55,7 +55,7 @@
                                         ;; slime ; for now at least I'm keeping this in Quicklisp
                                         ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
                                         )))))
-(cond (*enable-cider?*
+(cond (*enable-clojure?*
        (setf my:elpa-packages (append my:elpa-packages
                                       '(
                                         ac-cider
@@ -138,6 +138,12 @@
     clojure-mode-hook
     )
   "List of Lisp modes to add hooks to.")
+
+(when *enable-clojure?*
+  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                  '(
+                                    cider-repl-mode-hook
+                                    ))))
 
 ;; TODO: elisp mode now doesn't evaluate and print when C-j is pressed; C-u C-x C-e works. Find a way to make C-j work again.
 
@@ -250,13 +256,6 @@
                     nil
                     -1)))
   )
-
-;; Cider
-(when *enable-cider?*
-  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
-                                  '(
-                                    cider-repl-mode-hook
-                                    ))))
 
 ;; This mapping is also usable in elisp mode. I guess
 ;; lisp-mode-shared-map must be shared by several Lisp modes.
