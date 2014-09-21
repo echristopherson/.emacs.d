@@ -587,3 +587,7 @@ point."
  kept-old-versions 2
  version-control t                ; use versioned backups
  )
+
+;; Start server. TODO: Maybe don't limit this to GUI Emacs.
+(when (display-graphic-p)
+  (server-start))
