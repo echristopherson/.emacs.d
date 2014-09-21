@@ -139,11 +139,6 @@
     )
   "List of Lisp modes to add hooks to.")
 
-(when *enable-slime?*
-  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
-                                  '(
-                                    slime-repl-mode-hook
-                                    ))))
 (when *enable-cider?*
   (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
                                   '(
@@ -163,80 +158,84 @@
         *lisp-mode-hooks*)
 
 ;; SLIME
-(cond (*enable-slime?* 
-       (add-to-list 'load-path "~/.quicklisp/dists/quicklisp/software/slime-2.9")
-       (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
-       (require 'slime-autoloads)
-       (slime-setup '(slime-fancy))     ; load contrib packages
+(when *enable-slime?* 
+  (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
+                                  '(
+                                    slime-repl-mode-hook
+                                    )))
+  (add-to-list 'load-path "~/.quicklisp/dists/quicklisp/software/slime-2.9")
+  (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
+  (require 'slime-autoloads)
+  (slime-setup '(slime-fancy))     ; load contrib packages
 
-       ;; Point SLIME to copy of HyperSpec installed locally.
-       (setq common-lisp-hyperspec-root
-             "/usr/local/share/doc/hyperspec/HyperSpec/")
-       (setq common-lisp-hyperspec-symbol-table
-             (concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))
-       (setq common-lisp-hyperspec-issuex-table
-             (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))
+  ;; Point SLIME to copy of HyperSpec installed locally.
+  (setq common-lisp-hyperspec-root
+        "/usr/local/share/doc/hyperspec/HyperSpec/")
+  (setq common-lisp-hyperspec-symbol-table
+        (concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))
+  (setq common-lisp-hyperspec-issuex-table
+        (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))
 
-       ;; Use C-c C-] to close all parens in SLIME REPL, just like in Lisp mode.
-       (add-hook 'slime-repl-mode-hook
-                 #'(lambda ()
-                     (local-set-key (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)))
-       ;; This won't work, because slime hasn't been loaded yet:
-       ;; (define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
+  ;; Use C-c C-] to close all parens in SLIME REPL, just like in Lisp mode.
+  (add-hook 'slime-repl-mode-hook
+            #'(lambda ()
+                (local-set-key (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)))
+  ;; This won't work, because slime hasn't been loaded yet:
+  ;; (define-key slime-repl-mode-map (kbd "C-c C-]") 'slime-close-all-parens-in-sexp)
 
-       ;; Show parenthesis matching the one under the cursor
-       (show-paren-mode +1)
+  ;; Show parenthesis matching the one under the cursor
+  (show-paren-mode +1)
 
-       ;; Start SLIME and position frame and windows the way I like
-       (defun my-slime (&optional lisp-command)
-         (interactive)
-         ;; Position and size window if using GUI
-         (when (display-graphic-p)
-           (let ((frame (selected-frame)))
-             (set-frame-position frame 63 487)
-             (set-frame-size frame 168 22)))
-         ;; Split window into two side by side windows
-         (split-window-horizontally)
-         ;; Launch SLIME. Use `lisp-command' argument, if supplied; otherwise
-         ;; just go with `slime''s default (which currently is the global
-         ;; `inferior-lisp-program', but we shouldn't depend on that.
-         (if lisp-command
-             (slime lisp-command)
-           (slime))
-         ;; Choose desired directory both in Emacs in general and the REPL
-         ;; TODO: Use regular let once I've upgraded to Emacs 24 (which has
-         ;; optional lexical binding; the comment at the beginning of this
-         ;; file enables it).
-         (lexical-let ((lisp-directory "~/Code/learning/practical_common_lisp"))
-           ;; This needs to be a hook because otherwise Emacs will try to
-           ;; execute it before SLIME has finished loading.  TODO: We should
-           ;; probably not make this a hook; instead, change directories
-           ;; before calling slime and then reset afterwards.
-           (add-hook 'slime-connected-hook
-                     #'(lambda ()
-                         (cd lisp-directory)
-                         (slime-cd lisp-directory)))))
+  ;; Start SLIME and position frame and windows the way I like
+  (defun my-slime (&optional lisp-command)
+    (interactive)
+    ;; Position and size window if using GUI
+    (when (display-graphic-p)
+      (let ((frame (selected-frame)))
+        (set-frame-position frame 63 487)
+        (set-frame-size frame 168 22)))
+    ;; Split window into two side by side windows
+    (split-window-horizontally)
+    ;; Launch SLIME. Use `lisp-command' argument, if supplied; otherwise
+    ;; just go with `slime''s default (which currently is the global
+    ;; `inferior-lisp-program', but we shouldn't depend on that.
+    (if lisp-command
+        (slime lisp-command)
+      (slime))
+    ;; Choose desired directory both in Emacs in general and the REPL
+    ;; TODO: Use regular let once I've upgraded to Emacs 24 (which has
+    ;; optional lexical binding; the comment at the beginning of this
+    ;; file enables it).
+    (lexical-let ((lisp-directory "~/Code/learning/practical_common_lisp"))
+      ;; This needs to be a hook because otherwise Emacs will try to
+      ;; execute it before SLIME has finished loading.  TODO: We should
+      ;; probably not make this a hook; instead, change directories
+      ;; before calling slime and then reset afterwards.
+      (add-hook 'slime-connected-hook
+                #'(lambda ()
+                    (cd lisp-directory)
+                    (slime-cd lisp-directory)))))
 
-       ;; jsj-ac-show-help by Scott Jaderholm -- pop up help on Lisp
-       ;; functions w/ C-c C-h. Requires SLIME.
-       ;; TODO: test this, once SLIME is working again.
-       (defun jsj-ac-show-help ()
-         "show docs for symbol at point or at beginning of list if not on a symbol"
-         (interactive)
-         (let ((s (save-excursion
-                    (or (symbol-at-point)
-                        (progn (backward-up-list)
-                               (forward-char)
-                               (symbol-at-point))))))
-           (pos-tip-show (or (if (equal major-mode 'emacs-lisp-mode)
-                                 (ac-symbol-documentation s)
-                               (ac-slime-documentation (symbol-name s))) "no docs")
-                         'popup-tip-face
-                         ;; 'alt-tooltip
-                         (point)
-                         nil
-                         -1)))
-       ))
+  ;; jsj-ac-show-help by Scott Jaderholm -- pop up help on Lisp
+  ;; functions w/ C-c C-h. Requires SLIME.
+  ;; TODO: test this, once SLIME is working again.
+  (defun jsj-ac-show-help ()
+    "show docs for symbol at point or at beginning of list if not on a symbol"
+    (interactive)
+    (let ((s (save-excursion
+               (or (symbol-at-point)
+                   (progn (backward-up-list)
+                          (forward-char)
+                          (symbol-at-point))))))
+      (pos-tip-show (or (if (equal major-mode 'emacs-lisp-mode)
+                            (ac-symbol-documentation s)
+                          (ac-slime-documentation (symbol-name s))) "no docs")
+                    'popup-tip-face
+                    ;; 'alt-tooltip
+                    (point)
+                    nil
+                    -1)))
+  )
 
 ;; This mapping is also usable in elisp mode. I guess
 ;; lisp-mode-shared-map must be shared by several Lisp modes.
