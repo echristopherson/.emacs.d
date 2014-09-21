@@ -436,6 +436,9 @@
 ;; Cmd+Return for full screen; requires patch to Cocoa Emacs
 ;; TODO: Why doesn't `s-RET' work here?
 (global-set-key (kbd "<s-return>") 'toggle-frame-fullscreen)
+;; Also Ctrl+Cmd+F for consistency with other Mac apps, including Macvim
+;; TODO: I have no idea if this long code number is portable.
+(global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
 
 ;; C-c SPC to move right, potentially past the end of a
 ;; line. Useful for rectangular selection. Unlike in my Vim setup,
