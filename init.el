@@ -50,8 +50,9 @@
 (cond (*enable-slime?*
        (setf my:elpa-packages (append my:elpa-packages
                                       '(
-                                        ac-slime
+                                        ac-slime ; not provided by Quicklisp SLIME
                                         ;; slime ; for now at least I'm keeping this in Quicklisp
+                                        ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
                                         )))))
 (cond (*enable-cider?*
        (setf my:elpa-packages (append my:elpa-packages
