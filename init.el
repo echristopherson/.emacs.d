@@ -157,6 +157,26 @@
               (add-hook hook #'use-newline-and-indent)))
         *lisp-mode-hooks*)
 
+;;;;;;;;;;;;;;;;;;;
+;; auto-complete ;;
+;;;;;;;;;;;;;;;;;;;
+
+;; auto-complete
+;; Set up useful defaults for different modes
+(ac-config-default)
+
+;; ac-slime
+;; TODO: test this, once SLIME is working again.
+(cond (*enable-slime?*
+       (add-hook 'slime-mode-hook #'set-up-slime-ac)
+       (add-hook 'slime-repl-mode-hook #'set-up-slime-ac)
+       (eval-after-load "auto-complete"
+         '(add-to-list 'ac-modes 'slime-repl-mode))
+       ))
+
+;; Fuzzy autocompletion
+(setf ac-fuzzy-enable t)
+
 ;; SLIME
 (when *enable-slime?* 
   (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
@@ -240,26 +260,6 @@
 ;; This mapping is also usable in elisp mode. I guess
 ;; lisp-mode-shared-map must be shared by several Lisp modes.
 (define-key lisp-mode-shared-map (kbd "C-c C-h") 'jsj-ac-show-help)
-
-;;;;;;;;;;;;;;;;;;;
-;; auto-complete ;;
-;;;;;;;;;;;;;;;;;;;
-
-;; auto-complete
-;; Set up useful defaults for different modes
-(ac-config-default)
-
-;; ac-slime
-;; TODO: test this, once SLIME is working again.
-(cond (*enable-slime?*
-       (add-hook 'slime-mode-hook #'set-up-slime-ac)
-       (add-hook 'slime-repl-mode-hook #'set-up-slime-ac)
-       (eval-after-load "auto-complete"
-         '(add-to-list 'ac-modes 'slime-repl-mode))
-       ))
-
-;; Fuzzy autocompletion
-(setf ac-fuzzy-enable t)
 
 ;;;;;;;;;;;;;
 ;; paredit ;;
