@@ -189,7 +189,7 @@
 (setf ac-fuzzy-enable t)
 
 ;; SLIME
-(when *enable-slime?* 
+(when *enable-slime?*
   (setf *lisp-mode-hooks* (append *lisp-mode-hooks*
                                   '(
                                     slime-repl-mode-hook
@@ -294,7 +294,7 @@
   ;; following code: Stop SLIME's REPL from grabbing DEL, which is
   ;; annoying when backspacing over a '('
   (cond (*enable-slime?*
-         (add-hook 'slime-repl-mode-hook 
+         (add-hook 'slime-repl-mode-hook
                    #'(lambda ()
                        (define-key slime-repl-mode-map
                          (read-kbd-macro paredit-backward-delete-key) nil))
