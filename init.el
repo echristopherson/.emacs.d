@@ -34,7 +34,7 @@
 ;; now either el-get is `require'd already, or have been `load'ed by the
 ;; el-get installer.
 
-(setf my:elpa-packages '(
+(setf my-elpa-packages '(
                          auto-complete
                          evil
                          evil-surround
@@ -49,14 +49,14 @@
                          ))
 
 (cond (*enable-slime?*
-       (setf my:elpa-packages (append my:elpa-packages
+       (setf my-elpa-packages (append my-elpa-packages
                                       '(
                                         ac-slime ; not provided by Quicklisp SLIME
                                         ;; slime ; for now at least I'm keeping this in Quicklisp
                                         ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
                                         )))))
 (cond (*enable-clojure?*
-       (setf my:elpa-packages (append my:elpa-packages
+       (setf my-elpa-packages (append my-elpa-packages
                                       '(
                                         ac-cider
                                         cider
@@ -65,20 +65,20 @@
 ;; set local recipes, el-get-sources should only accept PLIST element
 (setq el-get-sources (mapcar (lambda (elpa-package)
                                `(:name ,elpa-package :type elpa))
-                             my:elpa-packages))
+                             my-elpa-packages))
 
 ;; now set our own packages
 (setq
- my:el-get-packages
+ my-el-get-packages
  '(el-get                               ; el-get is self-hosting
    ))
 
-(setq my:el-get-packages
-      (append my:el-get-packages
+(setq my-el-get-packages
+      (append my-el-get-packages
               (mapcar #'el-get-source-name el-get-sources)))
 
 ;; install new packages and init already installed packages
-(el-get 'sync my:el-get-packages)
+(el-get 'sync my-el-get-packages)
 
 ;;;;;;;;;;;;;;;
 ;; undo-tree ;;
