@@ -34,19 +34,20 @@
 ;; now either el-get is `require'd already, or have been `load'ed by the
 ;; el-get installer.
 
-(defvar *my-elpa-packages* '(
-                             auto-complete
-                             evil
-                             evil-surround
-                             exec-path-from-shell
-                             fuzzy
-                             ;; ir_black-theme ; I used to have this shown in list-packages; but I'm pretty sure it was always actually local.
-                             magit
-                             paredit
-                             popup ; this should be pulled in by auto-complete, but fsr isn't right now
-                             pos-tip
-                             undo-tree
-                             )
+(defvar *my-elpa-packages*
+  '(
+    auto-complete
+    evil
+    evil-surround
+    exec-path-from-shell
+    fuzzy
+    ;; ir_black-theme ; I used to have this shown in list-packages; but I'm pretty sure it was always actually local.
+    magit
+    paredit
+    popup ; this should be pulled in by auto-complete, but fsr isn't right now
+    pos-tip
+    undo-tree
+    )
   "package.el-based packages to have el-get install"
   )
 
@@ -70,9 +71,9 @@
                              *my-elpa-packages*))
 
 ;; now set our own packages
-(defvar
-  *my-el-get-packages*
-  '(el-get                              ; el-get is self-hosting
+(defvar *my-el-get-packages*
+  '(
+    el-get                              ; el-get is self-hosting
     )
   "Master list of packages for el-get to keep installed"
   )
