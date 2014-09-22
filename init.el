@@ -35,47 +35,47 @@
 ;; el-get installer.
 
 (defvar *my-elpa-packages* '(
-                     auto-complete
-                     evil
-                     evil-surround
-                     exec-path-from-shell
-                     fuzzy
-                     ;; ir_black-theme ; I used to have this shown in list-packages; but I'm pretty sure it was always actually local.
-                     magit
-                     paredit
-                     popup ; this should be pulled in by auto-complete, but fsr isn't right now
-                     pos-tip
-                     undo-tree
-                     )
-"package.el-based packages to have el-get install"
-)
+                             auto-complete
+                             evil
+                             evil-surround
+                             exec-path-from-shell
+                             fuzzy
+                             ;; ir_black-theme ; I used to have this shown in list-packages; but I'm pretty sure it was always actually local.
+                             magit
+                             paredit
+                             popup ; this should be pulled in by auto-complete, but fsr isn't right now
+                             pos-tip
+                             undo-tree
+                             )
+  "package.el-based packages to have el-get install"
+  )
 
 (when *enable-slime?*
-(setf *my-elpa-packages* (append *my-elpa-packages*
-                             '(
-                               ac-slime ; not provided by Quicklisp SLIME
-                               ;; slime ; for now at least I'm keeping this in Quicklisp
-                               ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
-                               ))))
+  (setf *my-elpa-packages* (append *my-elpa-packages*
+                                   '(
+                                     ac-slime ; not provided by Quicklisp SLIME
+                                     ;; slime ; for now at least I'm keeping this in Quicklisp
+                                     ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
+                                     ))))
 (when *enable-clojure?*
-(setf *my-elpa-packages* (append *my-elpa-packages*
-                             '(
-                               ac-cider
-                               cider
-                               ))))
+  (setf *my-elpa-packages* (append *my-elpa-packages*
+                                   '(
+                                     ac-cider
+                                     cider
+                                     ))))
 
 ;; set local recipes, el-get-sources should only accept PLIST element
 (setq el-get-sources (mapcar (lambda (elpa-package)
-                           `(:name ,elpa-package :type elpa))
-                         *my-elpa-packages*))
+                               `(:name ,elpa-package :type elpa))
+                             *my-elpa-packages*))
 
 ;; now set our own packages
 (defvar
-*my-el-get-packages*
-'(el-get                              ; el-get is self-hosting
-)
-"Master list of packages for el-get to keep installed"
-)
+  *my-el-get-packages*
+  '(el-get                              ; el-get is self-hosting
+    )
+  "Master list of packages for el-get to keep installed"
+  )
 
 (setq *my-el-get-packages*
       (append *my-el-get-packages*
