@@ -80,6 +80,13 @@
 ;; install new packages and init already installed packages
 (el-get 'sync my-el-get-packages)
 
+;; uninstall anything not specified -- this is in an effort to make
+;; sure my Emacsen are fairly consistent (i.e. we don't want to have
+;; things installed on one machine through package.el but not known to
+;; el-get, while another machine has the same el-get packages but not
+;; the ones installed outside it).
+(el-get-cleanup my-el-get-packages)
+
 ;;;;;;;;;;;;;;;
 ;; undo-tree ;;
 ;;;;;;;;;;;;;;;
