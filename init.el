@@ -281,12 +281,22 @@
 ;; to do unexpected things, and often wrongly thinks parens are
 ;; unbalanced.
 (when *use-paredit?*
+  (defun eac-set-up-wrap-key-bindings ()
+    "Set up bindings to enclose things in square brackets and curly braces, like the M-( binding for paredit-wrap-round built into paredit."
+    (define-key lisp-mode-shared-map (kbd "M-[") 'paredit-wrap-square)
+    ;; Note that this stomps on the default Emacs binding for
+    ;; backward-paragraph. That has the alternate keybind C-up,
+    ;; however.
+    (define-key lisp-mode-shared-map (kbd "M-{") 'paredit-wrap-curly))
+
   (autoload 'paredit-mode "paredit"
     "Minor mode for pseudo-structurally editing Lisp code." t)
   (mapcar #'(lambda (hook)
               (add-hook hook
                         #'(lambda ()
-                            (paredit-mode +1))))
+                            (paredit-mode +1)
+                            (eac-set-up-wrap-key-bindings)
+                            )))
           *lisp-mode-hooks*)
 
   ;; Special treatment is advised with SLIME: "SLIME’s REPL has the
