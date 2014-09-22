@@ -48,19 +48,19 @@
                          undo-tree
                          ))
 
-(cond (*enable-slime?*
-       (setf my-elpa-packages (append my-elpa-packages
-                                      '(
-                                        ac-slime ; not provided by Quicklisp SLIME
-                                        ;; slime ; for now at least I'm keeping this in Quicklisp
-                                        ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
-                                        )))))
-(cond (*enable-clojure?*
-       (setf my-elpa-packages (append my-elpa-packages
-                                      '(
-                                        ac-cider
-                                        cider
-                                        )))))
+(when *enable-slime?*
+  (setf my-elpa-packages (append my-elpa-packages
+                                 '(
+                                   ac-slime ; not provided by Quicklisp SLIME
+                                   ;; slime ; for now at least I'm keeping this in Quicklisp
+                                   ;; slime-fuzzy ; seems to be provided by Quicklisp SLIME; if I get it via el-get, SLIME is also brought in
+                                   ))))
+(when *enable-clojure?*
+  (setf my-elpa-packages (append my-elpa-packages
+                                 '(
+                                   ac-cider
+                                   cider
+                                   ))))
 
 ;; set local recipes, el-get-sources should only accept PLIST element
 (setq el-get-sources (mapcar (lambda (elpa-package)
