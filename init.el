@@ -15,8 +15,8 @@
 (defvar *use-evil?* nil "Whether or not to load and enable evil mode.")
 (defvar *use-xiki?* nil "Whether or not to load and enable el4r (for Xiki)")
 (defvar *use-paredit?* t "Whether or not to load and enable paredit and electric Return")
-(defvar *enable-slime?* t "Whether to enable SLIME (by loading required packages and configuring certain things")
-(defvar *enable-clojure?* t "Whether to enable Cider (by loading required packages and configuring certain things")
+(defvar *enable-slime?* nil "Whether to enable SLIME (by loading required packages and configuring certain things")
+(defvar *enable-clojure?* nil "Whether to enable Cider (by loading required packages and configuring certain things")
 
 ;;;;;;;;;;;;
 ;; el-get ;;
