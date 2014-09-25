@@ -589,7 +589,8 @@ point."
 ;; magit (which must be the /usr/local/bin version).
 ;; Apps in OS X >= 10.8 can't load path or other variables from
 ;; ~/.MacOSX/environment.plist
-(exec-path-from-shell-initialize)
+(unless (eq system-type 'windows-nt)
+  (exec-path-from-shell-initialize))
 
 ;; Show certain buffer on startup when no files have been
 ;; specified. A value of t makes Emacs show *scratch* (which is the
