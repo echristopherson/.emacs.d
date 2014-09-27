@@ -372,8 +372,7 @@
  '(custom-safe-themes (quote ("27b53b2085c977a8919f25a3a76e013ef443362d887d52eaa7121e6f92434972" default)))
  '(face-font-family-alternatives (quote (("Menlo" "Liberation Mono" "DejaVu Sans Mono") ("Monospace" "courier" "fixed") ("courier" "CMU Typewriter Text" "fixed") ("Sans Serif" "helv" "helvetica" "arial" "fixed") ("helv" "helvetica" "arial" "fixed"))))
  '(safe-local-variable-values (quote ((lexical-binding . t))))
- '(scroll-bar-mode nil)
- '(tool-bar-mode nil))
+ '(scroll-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
