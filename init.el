@@ -618,9 +618,11 @@ point."
       version-control t                 ; use versioned backups
       )
 
-;; Put auto-save files (#foo#) in one place
-(setq auto-save-file-name-transforms
-      '((".*" "~/.emacs.d/auto-save" t)))
+;; Put auto-save files (#foo#) in one place. Also remove initial dot
+;; of auto-save-list files.
+(make-directory "~/.emacs.d/auto-save" t)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save/\\1" t))
+      auto-save-list-file-prefix "~/.emacs.d/auto-save-list/saves-")
 
 ;; Start server. TODO: Maybe don't limit this to GUI Emacs.
 (when (display-graphic-p)
