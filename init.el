@@ -619,6 +619,10 @@ point."
  version-control t                ; use versioned backups
  )
 
+;; Put auto-save files (#foo#) in one place
+(setq auto-save-file-name-transforms
+      `((".*" "~/.emacs.d/auto-save" t)))
+
 ;; Start server. TODO: Maybe don't limit this to GUI Emacs.
 (when (display-graphic-p)
   (server-start))
