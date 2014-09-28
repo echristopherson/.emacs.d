@@ -10,6 +10,7 @@ tags
 TAGS
 *.elc
 .depend
+/auto-save-list
 /autosave
 /backup
 /elpa
