@@ -196,7 +196,7 @@
                                     slime-repl-mode-hook
                                     )))
   (add-to-list 'load-path "~/.quicklisp/dists/quicklisp/software/slime-2.9")
-  (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
+  (setq inferior-lisp-program "/usr/bin/env sbcl") ; your Lisp system
   (require 'slime-autoloads)
   (slime-setup '(slime-fancy))     ; load contrib packages
 
