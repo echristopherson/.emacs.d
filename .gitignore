@@ -10,9 +10,11 @@ tags
 TAGS
 *.elc
 .depend
-/autosave
-/backup
-/elpa
-/undo
+/auto-save-list/
+/auto-save/
+/backup/
+/elpa/
+/undo/
 /ac-comphist.dat
-/el-get
+/el-get/
+/eshell/

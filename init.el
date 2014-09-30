@@ -196,7 +196,7 @@
                                     slime-repl-mode-hook
                                     )))
   (add-to-list 'load-path "~/.quicklisp/dists/quicklisp/software/slime-2.9")
-  (setq inferior-lisp-program "/usr/local/bin/sbcl") ; your Lisp system
+  (setq inferior-lisp-program "/usr/bin/env sbcl") ; your Lisp system
   (require 'slime-autoloads)
   (slime-setup '(slime-fancy))     ; load contrib packages
 
@@ -610,15 +610,20 @@ point."
 ;; Backup directory instead of *~ files
 ;; From <http://emacswiki.org/emacs/BackupDirectory> and <http://snarfed.org/gnu_emacs_backup_files>
 (make-directory "~/.emacs.d/backup" t)
-(setq
- backup-by-copying t              ; don't clobber symlinks
- backup-directory-alist
- '(("." . "~/.emacs.d/backup"))    ; don't litter my fs tree
- delete-old-versions t
- kept-new-versions 6
- kept-old-versions 2
- version-control t                ; use versioned backups
- )
+(setq backup-by-copying t               ; don't clobber symlinks
+      backup-directory-alist
+      '(("." . "~/.emacs.d/backup"))    ; don't litter my fs tree
+      delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t                 ; use versioned backups
+      )
+
+;; Put auto-save files (#foo#) in one place. Also remove initial dot
+;; of auto-save-list files.
+(make-directory "~/.emacs.d/auto-save" t)
+(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save/\\1" t))
+      auto-save-list-file-prefix "~/.emacs.d/auto-save-list/saves-")
 
 ;; Start server. TODO: Maybe don't limit this to GUI Emacs.
 (when (display-graphic-p)
