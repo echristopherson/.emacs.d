@@ -160,6 +160,8 @@
 ;; TODO: elisp mode now doesn't evaluate and print when C-j is pressed; C-u C-x C-e works. Find a way to make C-j work again.
 
 ;; Auto indent when RET is pressed (not just C-j)
+;; NOTE: paredit-electrify-return-if-match also auto-indents. If
+;; *use-paredit* is true, that overrides this.
 (defun use-newline-and-indent ()
   (local-set-key (kbd "RET") 'newline-and-indent))
 
