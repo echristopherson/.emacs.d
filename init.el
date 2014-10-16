@@ -318,6 +318,7 @@
     "[\]}\)\"]"
     "If this regexp matches the text after the cursor, do an \"electric\"
   return.")
+
   (defun paredit-electrify-return-if-match (arg)
     "If the text after the cursor matches `*paredit-electrify-return-match*' then
   open and indent an empty line between the cursor and the text.  Move the
@@ -328,8 +329,10 @@
         (save-excursion (newline-and-indent)))
       (newline arg)
       (indent-according-to-mode)))
+  
   (defun use-paredit-electrify-return-if-match ()
     (local-set-key (kbd "RET") 'paredit-electrify-return-if-match))
+  
   (mapcar #'(lambda (hook)
               (unless (eq hook 'cider-repl-mode-hook) ; TODO: horrible kludge to make RET work in Clojure REPL
                 (remove-hook hook #'use-newline-and-indent)
