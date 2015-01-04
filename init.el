@@ -630,6 +630,10 @@ point."
 (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save/\\1" t))
       auto-save-list-file-prefix "~/.emacs.d/auto-save-list/saves-")
 
+;; Make maximized frames fill available space, instead of only taking
+;; up a multiple of character size.
+(setf frame-resize-pixelwise t)
+
 ;; Start server. TODO: Maybe don't limit this to GUI Emacs.
 (when (display-graphic-p)
   (server-start))
