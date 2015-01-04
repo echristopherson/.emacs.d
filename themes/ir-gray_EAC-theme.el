@@ -74,7 +74,7 @@
       (*variable*           "#C6C5FE")
       ;(*visual-selection*   "#262D51")) ; TODO: REMOVE
       (*visual-selection*   "#660000")
-      (*vertical-border*    "#666666")) ; CHANGED
+      (*vertical-border*    "#FFFFFF")) ; CHANGED
 
   ;;; EAC NOTE: The original version of this put a space after
   ;;; instances of the `,' substitution operator, which is legal but
@@ -128,7 +128,7 @@
    `(cursor ((t (:background, *cursor-underscore*))))
    ;; TODO
    `(text-cursor ((t (:background, *cursor-underscore*))))
-   `(vertical-border ((t (:foreground, *background-color*)))) ;; between splits
+   `(vertical-border ((t (:foreground, *vertical-border*)))) ;; between splits ; CHANGED
 
    ;; show-paren
    `(show-paren-mismatch ((t (:background, *red* :foreground, *normal* :weight bold))))
@@ -157,7 +157,6 @@
 
    ;; EAC's additions - to bring this theme closer to color-theme-ir-black.el
    ;; TODO
-   `(vertical-border ((t :background ,*vertical-border*)))
    ))
 
 ;;;###autoload
